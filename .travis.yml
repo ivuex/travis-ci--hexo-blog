@@ -1,22 +1,31 @@
 language: node_js
-node_js:
-- 9.2.0
+node_js: stable
+
+# S: Build Lifecycle
+install:
+  - npm install
+
+
+#before_script:
+ # - npm install -g gulp
+
+script:
+  - hexo clean
+  - hexo g
+
+after_script:
+  - cd ./public
+  - git init
+  - git config user.name "ivuex	"
+  - git config user.email "ivuex@yahoo.com"
+  - git add .
+  - git commit -m "Update docs"
+  - git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" master:master
+# E: Build LifeCycle
+
 branches:
   only:
-  - master
-before_install:
-- openssl aes-256-cbc -K $encrypted_b6a73d0683df_key -iv $encrypted_b6a73d0683df_iv
-  -in .travis/ssh_key.enc -out ~/.ssh/id_rsa -d
-- chmod 600 ~/.ssh/id_rsa
-- eval $(ssh-agent)
-- ssh-add ~/.ssh/id_rsa
-- cp .travis/ssh_config ~/.ssh/config
-- git config --global user.name 'travis-ci-d'
-- git config --global user.email 'travis-ci-d@repo.ren'
-install:
-- npm install hexo-cli -g
-- npm install
-script:
-- hexo clean
-- hexo g
-- hexo d
+    - blog-source
+env:
+ global:
+   - GH_REF: github.com/ivuex/ivuex.github.io.git
